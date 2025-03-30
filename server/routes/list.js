@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const User = require('../model/user');
 const List = require('../model/list');
-
+const authMiddleware = require('../middleware/authMiddleware');
 // Create Task API
-router.post('/addTask', async (req, res) => {
+router.post('/addTask', authMiddleware, async (req, res) => {
     try {
         const { title, description, id } = req.body;
 
@@ -21,7 +21,7 @@ router.post('/addTask', async (req, res) => {
 });
 
 // Update Task API
-router.put('/updateTask/:id', async (req, res) => {
+router.put('/updateTask/:id', authMiddleware, async (req, res) => {
     try {
         const { title, body, email } = req.body;
 
@@ -41,7 +41,7 @@ router.put('/updateTask/:id', async (req, res) => {
 });
 
 // Delete Task API
-router.delete('/deleteTask/:id', async (req, res) => {
+router.delete('/deleteTask/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.body;
 
@@ -62,7 +62,7 @@ router.delete('/deleteTask/:id', async (req, res) => {
 });
 
 // Get All Task API
-router.get('/getTask/:id', async (req, res) => {
+router.get('/getTask/:id', authMiddleware, async (req, res) => {
     /*
         To find all tasks (or lists) that belong to a specific user & 
         the sort method is used to arrange the task added recently at the top.

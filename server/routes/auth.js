@@ -1,14 +1,18 @@
 const router = require('express').Router();
 const User = require('../model/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const verifyToken = require('../middleware/authMiddleware');
 
+require('dotenv').config();
+const SECRET_KEY = process.env.SECRET_KEY;
 // Sign-Up API
 router.post('/register', async (req, res) => {
     try {
         const { email, username, password } = req.body;
 
         // generate a hashed version of the user's password to encrypt
-        const hashPass = bcrypt.hashSync(password);
+        const hashPass = bcrypt.hashSync(password, 10);
 
         // check if email already exists
         const existingUser = await User.findOne({ email });
@@ -45,13 +49,16 @@ router.post('/login', async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(200).json({ message: "Password is not correct!!" });
         }
-
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: '1h' });
+        
+        
         /* 
             extract the 'password' property from the 'user._doc' &
             the rest of the properties in 'user._doc' are collected into the 'others' object by using spread operator like this '...others'
         */
         const { password, ...others } = user._doc;
-        return res.status(200).json({ others });
+        return res.status(200).json({user: others, token});
 
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error!!" });
