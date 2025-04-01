@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const User = require('../model/user');
 const List = require('../model/list');
+const path = require('path');
+const multer = require('multer');
 const authMiddleware = require('../middleware/authMiddleware');
 // Create Task API
 router.post('/addTask', authMiddleware, async (req, res) => {
@@ -73,6 +75,30 @@ router.get('/getTask/:id', authMiddleware, async (req, res) => {
         res.status(200).json({ list });
     } else {
         res.status(200).json({ message: "Task Not Found!!" });
+    }
+});
+
+
+const storage = multer.diskStorage({
+    destination: './uploads/',  // Save files in 'uploads' folder
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}_${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage });
+// File Upload API
+router.post('/upload/:todoId', authMiddleware, upload.single('file'), async (req, res) => {
+    try {
+        console.log("Received request body:", req.body);
+        console.log("Received file:", req.file);
+        const todoId = req.params.todoId; // Capture the todoId from the URL
+
+        if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+        res.status(200).json({ message: 'File uploaded successfully', filePath: req.file.path });
+    } catch (error) {
+        res.status(500).json({ message: 'File upload failed', error });
     }
 });
 
