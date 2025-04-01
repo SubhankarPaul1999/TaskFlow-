@@ -6,6 +6,8 @@ const cors = require('cors');
 
 require('./config/database');
 
+require('./Reminder/reminderService');
+
 const auth = require('./routes/auth');
 const list = require('./routes/list');
 

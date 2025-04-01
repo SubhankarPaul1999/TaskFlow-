@@ -5,15 +5,15 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Create Task API
 router.post('/addTask', authMiddleware, async (req, res) => {
     try {
-        const { title, description, id } = req.body;
+        const { title, description, dueDate, id } = req.body;
 
         const existingUser = await User.findById(id);
 
         if (existingUser) {
-            const list = new List({ title, body: description, user: existingUser });
+            const list = new List({ title, body: description, dueDate: dueDate, user: existingUser });
             await list.save().then(() => res.status(200).json({ list }));
-            existingUser.list.push(list);
-            existingUser.save();
+            existingUser.list.push(list._id);
+            await existingUser.save();
         }
     } catch (error) {
         console.log(error);
@@ -23,7 +23,7 @@ router.post('/addTask', authMiddleware, async (req, res) => {
 // Update Task API
 router.put('/updateTask/:id', authMiddleware, async (req, res) => {
     try {
-        const { title, body, email } = req.body;
+        const { title, body, email, completed, dueDate } = req.body;
 
         const existingUser = await User.findOne({ email });
 
@@ -32,8 +32,8 @@ router.put('/updateTask/:id', authMiddleware, async (req, res) => {
                 updating the task in database by finding the id (provided in `req.params.id`) &
                 updates its `title` and `body` fields with the values passed in the request body.
             */
-            const list = await List.findByIdAndUpdate(req.params.id, { title, body });
-            list.save().then(() => res.status(200).json({ message: "Task Updated!" }));
+            const list = await List.findByIdAndUpdate(req.params.id, { title, body, completed, dueDate }, { new: true });
+            res.status(200).json({ message: "Task Updated!" });
         }
     } catch (error) {
         console.log(error);

@@ -9,6 +9,9 @@ const listSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    completed: { type: Boolean, default: false },
+    dueDate: { type: Date, required: true }, // Add due date
+    reminderSent: { type: Boolean, default: false },
     user: [
         {
             type: mongoose.Types.ObjectId,
