@@ -95,7 +95,11 @@ router.post('/upload/:todoId', authMiddleware, upload.single('file'), async (req
         const todoId = req.params.todoId; // Capture the todoId from the URL
 
         if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-
+        const task = await List.findById(todoId);
+        if (task) {
+            task.files= req.file.path;
+            await task.save();
+        }
         res.status(200).json({ message: 'File uploaded successfully', filePath: req.file.path });
     } catch (error) {
         res.status(500).json({ message: 'File upload failed', error });

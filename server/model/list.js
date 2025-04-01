@@ -12,6 +12,7 @@ const listSchema = new mongoose.Schema({
     completed: { type: Boolean, default: false },
     dueDate: { type: Date, required: true }, // Add due date
     reminderSent: { type: Boolean, default: false },
+    files: [{ type: String }],
     user: [
         {
             type: mongoose.Types.ObjectId,

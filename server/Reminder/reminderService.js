@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send email reminder
-const sendReminderEmail = async (task, _) => {
+const sendReminderEmail = async (task, userMail) => {
     try {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
