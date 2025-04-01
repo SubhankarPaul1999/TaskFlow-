@@ -8,8 +8,8 @@ require('dotenv').config(); // Load environment variables
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: "subhankarpl13@gmail.com", // Use environment variables
-        pass: "nvam fner ixce zdgn"
+        user: process.env.USER_EMAIL, // Use environment variables
+        pass: process.env.USER_PASSWORD
     }
 });
 
@@ -17,8 +17,8 @@ const transporter = nodemailer.createTransport({
 const sendReminderEmail = async (task, _) => {
     try {
         const mailOptions = {
-            from: "subhankarpl13@gmail.com",
-            to: "psubhankar231@gmail.com", // Send email to the actual user
+            from: process.env.SENDER_EMAIL,
+            to: process.env.USER_EMAIL, // Send email to the actual user
             subject: `Reminder: Task Due - ${task.title}`,
             text: `Your task "${task.title}" is due on ${moment(task.dueDate).format('LLLL')}. Please complete it soon.`
         };
